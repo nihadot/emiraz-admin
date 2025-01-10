@@ -93,6 +93,8 @@ const [loading,setLoading] = useState(false);
        seoDescriptionAr: "",
        seoKeywords: "", // Initial state for Arabic
        seoKeywordsAr: "",
+       productDetails:"",
+       productDetailsAr:"",
     },
     // initialValues : {
     //   productTitle: "Sample Product Title", // English product title
