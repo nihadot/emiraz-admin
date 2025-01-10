@@ -1,10 +1,7 @@
 import { TailSpin } from 'react-loader-spinner'
 
 
-
-type Props = {}
-
-function Loader({height = 80,width =80,}: Props) {
+function Loader({height = 80,width =80,}: {height:number | string, width:number | string}) {
   return (
     <TailSpin
   visible={true}

@@ -10,26 +10,6 @@ import Loader from "@/components/Loader/Loader";
 import { CLOUDINARY_NAME, CLOUDINARY_PERSISTENT } from "@/api";
 import axios from "axios";
 
-interface BlogFormValues {
-  blogTitle: string;
-  blogTitleAr: string;
-  blogDescription: string;
-  blogDescriptionAr: string;
-  blogDate: string;
-  seoTitle: string;
-  seoTitleAr: string;
-  seoDescription: string;
-  seoDescriptionAr: string;
-  seoKeywords: string;
-  seoKeywordsAr: string;
-  imageLink: string;
-}
-
-// Define types for login response
-interface BlogResponse {
-  success: boolean; // Indicates if the operation was successful
-  message: string;  // Contains a descriptive message
-}
 
 
 
@@ -37,7 +17,7 @@ const BlogForm = () => {
   const [addBlog, {  }] = useAddBlogMutation();
 const [loading,setLoading] = useState(false);
   const [preview, setPreview] = useState('');
-  const [imageFile, setImageFile] = useState(null);
+  const [imageFile, setImageFile] = useState<any>(null);
   // Validation schema using Yup
   const validationSchema = Yup.object({
     blogTitle: Yup.string()
@@ -102,7 +82,7 @@ const [loading,setLoading] = useState(false);
           return errorToast('Image is required');
         }
 
-        const data: BlogFormValues = {
+        const data: any = {
           blogTitle: values.blogTitle,
           blogTitleAr: values.blogTitleAr,
           blogDescription: values.blogDescription,
@@ -133,7 +113,7 @@ const [loading,setLoading] = useState(false);
           data.imageLink = responseImageFile;
         }
 
-        const response: BlogResponse = await addBlog(data).unwrap();
+        const response:any = await addBlog(data).unwrap();
 
        
           successToast(response.message || 'Created')
@@ -143,7 +123,7 @@ const [loading,setLoading] = useState(false);
         resetForm(); // Clear the form after submission
 
 
-      } catch (err) {
+      } catch (err:any) {
         if (err?.data?.message) {
           errorToast(err?.data?.message)
         } else if (Array.isArray(err?.data?.errors)) {

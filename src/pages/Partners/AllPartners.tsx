@@ -1,8 +1,7 @@
-import NewsCard from '@/components/NewsCard/NewsCard';
-import PartnersCard from '@/components/PartnersCard/PartnersCard';
+import PartnersCard, { Partners } from '@/components/PartnersCard/PartnersCard';
 import { errorToast, successToast } from '@/components/Toast';
 import { useDeletePartnersMutation, useGetAllPartnersQuery } from '@/features/partners/partnersApi';
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 import { useLocation } from 'react-router';
 
 type Props = {}
@@ -12,15 +11,15 @@ function AllPartners({}: Props) {
 
 
     const [page, setPage] = useState(1);
-    const [partners, setPartners] = useState([]); // State to hold all partners
+    const [partners, setPartners] = useState<any>([]); // State to hold all partners
     const [loading, setLoading] = useState(true); // Track loading state
     const [hasMore, setHasMore] = useState(true); // Track if there are more partners items to load
     const { state } = useLocation();
 
 
 
-      const { data, isError, error, isLoading, refetch } = useGetAllPartnersQuery({ page, limit: 10 });
-      const [deletePartners, { isLoading: isDeleteLoading, isError: isDeleteError, error: deleteError }] =
+      const { data,  isLoading, refetch } = useGetAllPartnersQuery({ page, limit: 10 });
+      const [deletePartners, {  }] =
         useDeletePartnersMutation();
     
 
@@ -30,7 +29,7 @@ function AllPartners({}: Props) {
               if (data.data.length === 0) {
                 setHasMore(false);
               } else {
-                setPartners((prevPartners) => [...prevPartners, ...data.data]); // Append new partners items
+                setPartners((prevPartners:any) => [...prevPartners, ...data.data]); // Append new partners items
               }
               setLoading(false); // Stop loading when data is received
             }
@@ -76,8 +75,8 @@ function AllPartners({}: Props) {
         successToast("Partners deleted successfully!");
   
         // Remove the deleted news from the state
-        setPartners((prevPartners) => prevPartners.filter((item) => item._id !== id));
-      } catch (err) {
+        setPartners((prevPartners: any[]) => prevPartners.filter((item) => item._id !== id));
+      } catch (err:any) {
         if (err?.data?.message) {
           errorToast(err?.data?.message);
         } else if (Array.isArray(err?.data?.errors)) {
@@ -105,7 +104,7 @@ function AllPartners({}: Props) {
           <div className="grid grid-cols-3 gap-8 h-screen ">
             {Array.from({ length: 12 })
               .fill(null)
-              .map((item, index) => (
+              .map((_item, index) => (
                 <div key={index} className="bg-slate-50 rounded-xl h-[300px] w-full"></div>
               ))}
           </div>
@@ -121,7 +120,7 @@ function AllPartners({}: Props) {
   return (
     <div>
       <div className="grid grid-cols-3 gap-8">
-        {partners.map((item) => (
+        {partners.map((item: Partners) => (
           <PartnersCard
             handleDelete={() => handleDelete(item._id)}
             key={item._id}

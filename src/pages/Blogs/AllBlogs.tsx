@@ -6,17 +6,23 @@ import { useLocation } from "react-router";
 
 type Props = {};
 
+interface BlogResponse {
+  data: any[];
+}
+
 function AllBlogs({ }: Props) {
  
   const [page, setPage] = useState(1);
-  const [blogs, setBlogs] = useState([]); // State to hold all blogs
+  const [blogs, setBlogs] = useState<any[]>([]); // State to hold all blogs
   const [loading, setLoading] = useState(true); // Track loading state
   const [hasMore, setHasMore] = useState(true); // Track if there are more blogs to load
   const { state } = useLocation();
-  const { data, isError, error, isLoading, refetch } = useGetBlogsQuery({ page, limit: 10 });
-  const [deleteBlog, { isLoading: isDeleteLoading, isError: isDeleteError, error: deleteError }] =
+  const { data:blogData,  isLoading, refetch } = useGetBlogsQuery({ page, limit: 10 });
+  const [deleteBlog] =
     useDeleteBlogMutation();
+    const data = blogData as unknown as BlogResponse
 
+   
   // Effect to fetch data when `data` is available or refetch is triggered
   useEffect(() => {   
     if (data) {
@@ -76,7 +82,7 @@ function AllBlogs({ }: Props) {
 
       // Remove the deleted blog from the state
       setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog._id !== id));
-    } catch (err) {
+    } catch (err:any) {
       if (err?.data?.message) {
         errorToast(err?.data?.message);
       } else if (Array.isArray(err?.data?.errors)) {
@@ -92,7 +98,7 @@ function AllBlogs({ }: Props) {
       <div className="grid grid-cols-3 gap-8 h-screen ">
         {Array.from({ length: 12 })
           .fill(null)
-          .map((item, index) => (
+          .map((_item, index) => (
             <div key={index} className="bg-slate-50 rounded-xl h-[468px] w-full"></div>
           ))}
       </div>
@@ -108,7 +114,7 @@ function AllBlogs({ }: Props) {
   return (
     <div>
       <div className="grid grid-cols-3 gap-8">
-        {blogs.map((blog) => (
+        {blogs.map((blog:any) => (
           <BlogCard
             handleDelete={() => handleDelete(blog._id)}
             key={blog._id} // Ensure `id` exists in your Blog type

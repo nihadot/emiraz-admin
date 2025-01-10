@@ -9,12 +9,13 @@ import { Button, Label, TextInput } from 'flowbite-react';
 import { useFormik } from 'formik';
 import { useState } from 'react'
 import * as Yup from "yup";
+import { ImageLink } from '../Partners/CreatePartners';
 
 type Props = {}
 
 interface GalleryValues {
     name: string;
-    imageLink: string;
+    imageLink?: ImageLink;
 }
 
 
@@ -27,8 +28,8 @@ const validationSchema = Yup.object({
 
 function CreateGallery({ }: Props) {
     const [addGallery, {  }] = useAddGalleryMutation();
-    const [preview, setPreview] = useState();
-    const [imageFile, setImageFile] = useState();
+    const [preview, setPreview] = useState<any>();
+    const [imageFile, setImageFile] = useState<any>();
     const [loading,setLoading] = useState(false);
 
     // Validation schema using Yup
@@ -80,7 +81,7 @@ function CreateGallery({ }: Props) {
                 resetForm(); // Clear the form after submission
                 setPreview('');
                 setImageFile('');
-            } catch (err) {
+            } catch (err:any) {
                 if (err?.message || err?.data?.message) {
                     errorToast(err?.data?.message || err.message);
                 } else if (Array.isArray(err?.data?.errors)) {

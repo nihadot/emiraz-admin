@@ -1,5 +1,5 @@
 import { baseUrl } from '@/api';
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { BaseQueryApi, createApi, FetchArgs, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${baseUrl}/blogs`,
@@ -21,7 +21,7 @@ const refreshTokenQuery = fetchBaseQuery({
 
 
 // Enhanced base query to handle token refresh
-const baseQueryWithReauth = async (args, api, extraOptions) => {
+const baseQueryWithReauth = async (args: string | FetchArgs, api: BaseQueryApi, extraOptions: {}) => {
   let result = await baseQuery(args, api, extraOptions);
 
   // Check if token expired (e.g., status 401 or 403)
@@ -30,7 +30,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
     
   
   // Attempt to refresh the token
-  const refreshResult = await refreshTokenQuery('/refresh', api, extraOptions);
+  const refreshResult:any = await refreshTokenQuery('/refresh', api, extraOptions);
 
     if (refreshResult?.data?.accessToken) {
       // Save the new token and retry the original request
@@ -61,9 +61,9 @@ export const blogApi = createApi({
       },
       providesTags: ['Blog'],
     }),
-    getBlog: builder.query<Blog, string>({
+    getBlog: builder.query<any, string>({
       query: (id) => `/${id}`,
-      providesTags: (result, error, id) => [{ type: 'Blog', id }],
+      providesTags: (id) => [{ type: 'Blog', id }],
     }),
     addBlog: builder.mutation<void, Partial<Blog>>({
       query: (newBlog) => ({
@@ -77,15 +77,15 @@ export const blogApi = createApi({
       }),
       invalidatesTags: ['Blog'],
     }),
-    updateBlog: builder.mutation<void, { id: string; data: Partial<Blog> }>({
+    updateBlog: builder.mutation<any, { id: string; data: Partial<Blog> }>({
       query: ({ id, data }) => ({
         url: `/${id}`,
         method: 'PUT',
         body: data,
       }),
-      invalidatesTags: (result, error, { id }) => [{ type: 'Blog', id }],
+      invalidatesTags: ({ id }) => [{ type: 'Blog', id }],
     }),
-    deleteBlog: builder.mutation<void, string>({
+    deleteBlog: builder.mutation<any, string>({
       query: (id) => ({
         url: `/${id}`,
         method: 'DELETE',
@@ -94,7 +94,7 @@ export const blogApi = createApi({
           'Content-Type': 'application/json',
         },
       }),
-      invalidatesTags: (result, error, id) => [{ type: 'Blog', id }],
+      invalidatesTags: (id) => [{ type: 'Blog', id }],
     }),
   }),
 });

@@ -1,9 +1,7 @@
-import React from 'react'
 import Image from '../Image/Image'
 import HeadingThree from '../Titles/MainHeading/HeaderThree'
 import Paragraph from '../Paragraph/Paragraph'
 import { IconButton } from '../Buttons'
-import { rightArrow } from '../../assets/assets/svg'
 import { useNavigate } from 'react-router'
 
 export interface News {

@@ -10,6 +10,7 @@ import { useGetBlogQuery, useGetBlogsQuery, useUpdateBlogMutation } from '@/feat
 import Loader from '@/components/Loader/Loader';
 import { CLOUDINARY_NAME, CLOUDINARY_PERSISTENT } from '@/api';
 import axios from 'axios';
+import { ImageLink } from '../Partners/CreatePartners';
 
 type Props = {}
 
@@ -52,7 +53,7 @@ interface BlogFormValues {
     seoDescriptionAr: string;
     seoKeywords: string;
     seoKeywordsAr: string;
-    imageLink: string;
+    imageLink?: ImageLink;
 }
 
 
@@ -65,14 +66,17 @@ function EditBlogBySlug({ }: Props) {
     const { slug } = useParams();
     const navigate = useNavigate();
     const [preview, setPreview] = useState(state?.imageLink?.secure_url);
-    const [imageFile, setImageFile] = useState(null);
-    const { data: blogData } = useGetBlogQuery(slug, {
+    const [imageFile, setImageFile] = useState<any>(null);
+    if(!slug){
+        return true
+    }
+    const { data: blogData } = useGetBlogQuery<any>(slug, {
         skip: !!state, // Skip query if state exists
     });
     const [loading,setLoading] = useState(false);
 
     // Use RTK Query with the `skip` option
-    const { } = useGetBlogsQuery({}, { skip: !shouldRefetch })
+    const { } = useGetBlogsQuery({limit:10,page:1}, { skip: !shouldRefetch })
 
 
 
@@ -110,13 +114,13 @@ function EditBlogBySlug({ }: Props) {
         },
         //    },
         validationSchema,
-        onSubmit: async (values, { resetForm }) => {
+        onSubmit: async (values, {  }) => {
           setLoading(true);
             try {
 
                 
 
-                const data: BlogFormValues = {
+                const data: any = {
                     blogTitle: values.blogTitle,
                     blogTitleAr: values.blogTitleAr,
                     blogDescription: values.blogDescription,
@@ -155,7 +159,7 @@ function EditBlogBySlug({ }: Props) {
                 successToast('Updated');
 
 
-            } catch (err) {
+            } catch (err:any) {
                 if (err?.data?.message) {
                     errorToast(err?.data?.message)
                 } else if (Array.isArray(err?.data?.errors)) {

@@ -24,9 +24,9 @@ export const newsApi = createApi({
     }),
     getNews: builder.query({
       query: (id) => `/${id}`,
-      providesTags: (result, error, id) => [{ type: 'News', id }],
+      providesTags: (id) => [{ type: 'News', id }],
     }),    
-    updateNews: builder.mutation<void, { id: string; data }>({
+    updateNews: builder.mutation<any, { id: string; data: any }>({
       query: ({ id, data }) => ({
         url: `/${id}`,
         method: 'PUT',
@@ -36,9 +36,9 @@ export const newsApi = createApi({
           'Content-Type': 'application/json',
         },
       }),
-      invalidatesTags: (result, error, { id }) => [{ type: 'News', id }],
+      invalidatesTags: ({ id }) => [{ type: 'News', id }],
     }),
-    deleteNews: builder.mutation<void, string>({
+    deleteNews: builder.mutation<any, string>({
       query: (id) => ({
         url: `/${id}`,
         method: 'DELETE',
@@ -47,7 +47,7 @@ export const newsApi = createApi({
           'Content-Type': 'application/json',
         },
       }),
-      invalidatesTags: (result, error, id) => [{ type: 'News', id }],
+      invalidatesTags: (id) => [{ type: 'News', id }],
     }),
   }),
 });

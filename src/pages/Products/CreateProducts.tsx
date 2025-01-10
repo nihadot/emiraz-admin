@@ -10,6 +10,15 @@ import { CLOUDINARY_NAME, CLOUDINARY_PERSISTENT } from "@/api";
 import axios from "axios";
 import { useAddProductMutation } from "@/features/product/productsApi";
 
+type ImageLink = {
+  public_id: string;
+  secure_url: string;
+  url: string;
+  bytes: number;
+  width: number;
+  height: number;
+};
+
 interface ProductFormValues {
   productTitle: string;
   productTitleAr: string;
@@ -21,7 +30,7 @@ interface ProductFormValues {
   seoDescriptionAr: string;
   seoKeywords: string;
   seoKeywordsAr: string;
-  imageLink?: string;
+  imageLink?: ImageLink;
 
   // New Fields
   productDetails: string; // English name details
@@ -66,41 +75,41 @@ const validationSchema = Yup.object({
 const CreateProducts = () => {
   const [addProduct, {  }] = useAddProductMutation();
 const [loading,setLoading] = useState(false);
-  const [preview, setPreview] = useState();
-  const [imageFile, setImageFile] = useState();
+  const [preview, setPreview] = useState<any>();
+  const [imageFile, setImageFile] = useState<any>();
   // Validation schema using Yup
  
 
   // Formik configuration
   const formik = useFormik({
-    // initialValues: {
-    //    productTitle: "",
-    //    productTitleAr: "", // Initial state for Arabic
-    //    productDescription: "",
-    //    productDescriptionAr: "", // Initial state for Arabic
-    //    seoTitle: "",
-    //    seoTitleAr: "",
-    //    seoDescription: "", // Initial state for Arabic
-    //    seoDescriptionAr: "",
-    //    seoKeywords: "", // Initial state for Arabic
-    //    seoKeywordsAr: "",
-    // },
-    initialValues : {
-      productTitle: "Sample Product Title", // English product title
-      productTitleAr: "عنوان المنتج التجريبي", // Arabic product title
-      productDescription: "This is a sample product description. It provides detailed information about the product, including its features, benefits, and usage.", // English product description
-      productDescriptionAr: "هذا وصف تجريبي للمنتج. يقدم معلومات مفصلة حول المنتج بما في ذلك ميزاته وفوائده وكيفية استخدامه.", // Arabic product description
-      seoTitle: "Sample SEO Title for Product", // SEO title (English)
-      seoTitleAr: "عنوان السيو التجريبي للمنتج", // SEO title (Arabic)
-      seoDescription: "This is a sample SEO meta description for a product. It is optimized for search engines and provides concise details.", // SEO description (English)
-      seoDescriptionAr: "هذه وصف سيو تجريبي للمنتج. تم تحسينه لمحركات البحث ويقدم تفاصيل موجزة.", // SEO description (Arabic)
-      seoKeywords: "product, features, benefits", // SEO keywords (English)
-      seoKeywordsAr: "منتج, ميزات, فوائد", // SEO keywords (Arabic)
-    
-      // New Fields
-      productDetails: "Sample name details", // English name details
-      productDetailsAr: "تفاصيل الاسم التجريبي", // Arabic name details
+    initialValues: {
+       productTitle: "",
+       productTitleAr: "", // Initial state for Arabic
+       productDescription: "",
+       productDescriptionAr: "", // Initial state for Arabic
+       seoTitle: "",
+       seoTitleAr: "",
+       seoDescription: "", // Initial state for Arabic
+       seoDescriptionAr: "",
+       seoKeywords: "", // Initial state for Arabic
+       seoKeywordsAr: "",
     },
+    // initialValues : {
+    //   productTitle: "Sample Product Title", // English product title
+    //   productTitleAr: "عنوان المنتج التجريبي", // Arabic product title
+    //   productDescription: "This is a sample product description. It provides detailed information about the product, including its features, benefits, and usage.", // English product description
+    //   productDescriptionAr: "هذا وصف تجريبي للمنتج. يقدم معلومات مفصلة حول المنتج بما في ذلك ميزاته وفوائده وكيفية استخدامه.", // Arabic product description
+    //   seoTitle: "Sample SEO Title for Product", // SEO title (English)
+    //   seoTitleAr: "عنوان السيو التجريبي للمنتج", // SEO title (Arabic)
+    //   seoDescription: "This is a sample SEO meta description for a product. It is optimized for search engines and provides concise details.", // SEO description (English)
+    //   seoDescriptionAr: "هذه وصف سيو تجريبي للمنتج. تم تحسينه لمحركات البحث ويقدم تفاصيل موجزة.", // SEO description (Arabic)
+    //   seoKeywords: "product, features, benefits", // SEO keywords (English)
+    //   seoKeywordsAr: "منتج, ميزات, فوائد", // SEO keywords (Arabic)
+    
+    //   // New Fields
+    //   productDetails: "Sample name details", // English name details
+    //   productDetailsAr: "تفاصيل الاسم التجريبي", // Arabic name details
+    // },
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
       setLoading(true);
@@ -157,7 +166,7 @@ const [loading,setLoading] = useState(false);
         resetForm(); // Clear the form after submission
 
 
-      } catch (err) {
+      } catch (err:any) {
         if (err?.data?.message) {
           errorToast(err?.data?.message)
         } else if (Array.isArray(err?.data?.errors)) {
@@ -430,7 +439,7 @@ const [loading,setLoading] = useState(false);
         <Image
           src={preview}
 
-          alt={formik.values.blogTitle}
+          alt={formik.values.productTitle}
           className="max-w-[360px] mb-3 rounded-xl h-[192px] object-cover w-full"
         />
         <label onClick={removeTheImage} htmlFor="" className="bg-red-600 p-2 rounded text-white text-xs">Remove</label>

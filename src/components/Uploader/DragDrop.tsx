@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Compressor from 'compressorjs'
 import { errorToast } from '../Toast';
 
@@ -11,6 +11,9 @@ function DragDrop({ onImageProcessed }: Props) {
   // Function to handle the file input
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
+    if(!file){
+      return true;
+    }
 
     if (!file.type.startsWith('image/')) {
         errorToast('Only image files are allowed');

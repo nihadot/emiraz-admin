@@ -24,9 +24,9 @@ export const galleryApi = createApi({
     }),
     getGallery: builder.query({
       query: (id) => `/${id}`,
-      providesTags: (result, error, id) => [{ type: 'Galley', id }],
+      providesTags: ( id) => [{ type: 'Galley', id }],
     }),    
-    updateGallery: builder.mutation<void, { id: string; data }>({
+    updateGallery: builder.mutation<any, { id: string; data: any }>({
       query: ({ id, data }) => ({
         url: `/${id}`,
         method: 'PUT',
@@ -36,9 +36,9 @@ export const galleryApi = createApi({
           'Content-Type': 'application/json',
         },
       }),
-      invalidatesTags: (result, error, { id }) => [{ type: 'Galley', id }],
+      invalidatesTags: ({ id }) => [{ type: 'Galley', id }],
     }),
-    deleteGallery: builder.mutation<void, string>({
+    deleteGallery: builder.mutation<any, string>({
       query: (id) => ({
         url: `/${id}`,
         method: 'DELETE',
@@ -47,7 +47,7 @@ export const galleryApi = createApi({
           'Content-Type': 'application/json',
         },
       }),
-      invalidatesTags: (result, error, id) => [{ type: 'Galley', id }],
+      invalidatesTags: (id) => [{ type: 'Galley', id }],
     }),
   }),
 });

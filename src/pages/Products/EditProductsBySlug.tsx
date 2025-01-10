@@ -6,7 +6,6 @@ import { useLocation, useNavigate, useParams } from 'react-router'
 import * as Yup from "yup";
 import DragDrop from '@/components/Uploader/DragDrop';
 import Image from '@/components/Image/Image';
-import { useGetBlogQuery, useGetBlogsQuery, useUpdateBlogMutation } from '@/features/blog/blogApi';
 import Loader from '@/components/Loader/Loader';
 import { CLOUDINARY_NAME, CLOUDINARY_PERSISTENT } from '@/api';
 import axios from 'axios';
@@ -42,6 +41,15 @@ const validationSchema = Yup.object({
     .required("تفاصيل الاسم مطلوبة."), // Arabic validation
 });
 
+type ImageLink = {
+  public_id: string;
+  secure_url: string;
+  url: string;
+  bytes: number;
+  width: number;
+  height: number;
+};
+
 interface ProductFormValues {
     productTitle: string;
   productTitleAr: string;
@@ -53,7 +61,7 @@ interface ProductFormValues {
   seoDescriptionAr: string;
   seoKeywords: string;
   seoKeywordsAr: string;
-  imageLink: string;
+  imageLink?: ImageLink;
   productDetailsAr:string;
   productDetails:string;
 }
@@ -68,7 +76,7 @@ function EditProductsBySlug({ }: Props) {
     const { slug } = useParams();
     const navigate = useNavigate();
     const [preview, setPreview] = useState(state?.imageLink?.secure_url);
-    const [imageFile, setImageFile] = useState(null);
+    const [imageFile, setImageFile] = useState<any>(null);
     const { data: blogData } = useGetProductQuery(slug, {
         skip: !!state, // Skip query if state exists
     });
@@ -114,7 +122,7 @@ function EditProductsBySlug({ }: Props) {
         },
         //    },
         validationSchema,
-        onSubmit: async (values, { resetForm }) => {
+        onSubmit: async (values, {  }) => {
           setLoading(true);
             try {
 
@@ -154,6 +162,9 @@ function EditProductsBySlug({ }: Props) {
                 }
 
 
+                if (!slug) {
+                  throw new Error("Product ID is missing");
+                }
 
                 await updateProduct({ id: slug, data }).unwrap();
 
@@ -162,7 +173,7 @@ function EditProductsBySlug({ }: Props) {
                 successToast('Updated');
 
 
-            } catch (err) {
+            } catch (err:any) {
                 if (err?.data?.message) {
                     errorToast(err?.data?.message)
                 } else if (Array.isArray(err?.data?.errors)) {
@@ -432,7 +443,7 @@ function EditProductsBySlug({ }: Props) {
              {/* Image uploader (also checking size and compressing image to convert into webp) */}
              <div className="my-12">
                <DragDrop
-                 onImageProcessed={(e) => {
+                 onImageProcessed={(e:any) => {
                    setPreview(URL.createObjectURL(e))
                    setImageFile(e)
                  }}
@@ -443,7 +454,7 @@ function EditProductsBySlug({ }: Props) {
                <Image
                  src={preview}
        
-                 alt={formik.values.blogTitle}
+                 alt={formik.values.productTitle}
                  className="max-w-[360px] mb-3 rounded-xl h-[192px] object-cover w-full"
                />
                <label onClick={removeTheImage} htmlFor="" className="bg-red-600 p-2 rounded text-white text-xs">Remove</label>

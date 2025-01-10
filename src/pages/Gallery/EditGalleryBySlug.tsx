@@ -10,14 +10,14 @@ import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
 import * as Yup from "yup";
+import { ImageLink } from "../Partners/CreatePartners";
 
 type Props = {}
 
 interface GalleryValues {
     name: string;
-    imageLink: string;
+    imageLink?: ImageLink;
 }
-
 
 
 const validationSchema = Yup.object({
@@ -37,7 +37,7 @@ function EditGalleryBySlug({}: Props) {
     const { slug } = useParams();
     const navigate = useNavigate();
     const [preview, setPreview] = useState(state?.imageLink?.secure_url);
-      const [imageFile, setImageFile] = useState(null);
+      const [imageFile, setImageFile] = useState<any>(null);
       const { data: galleryData } = useGetAllGalleryQuery(slug, {
           skip: !!state, // Skip query if state exists
       });
@@ -95,6 +95,10 @@ function EditGalleryBySlug({}: Props) {
                     };
                     data.imageLink = responseImageFile;
                 }
+                if (!slug) {
+                    throw new Error("Product ID is missing");
+                  }
+  
 
                  await updateGallery({ id:slug,data:data}).unwrap();
 
@@ -102,7 +106,7 @@ function EditGalleryBySlug({}: Props) {
 
                  successToast('Updated');
 
-            } catch (err) {
+            }catch (err:any) {
                 if (err?.message || err?.data?.message) {
                     errorToast(err?.data?.message || err.message);
                 } else if (Array.isArray(err?.data?.errors)) {

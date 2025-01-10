@@ -1,10 +1,7 @@
-import NewsCard from '@/components/NewsCard/NewsCard';
-import PartnersCard from '@/components/PartnersCard/PartnersCard';
-import ProductsCard from '@/components/ProductsCard/ProductsCard';
+import ProductsCard, { Products } from '@/components/ProductsCard/ProductsCard';
 import { errorToast, successToast } from '@/components/Toast';
-import { useDeletePartnersMutation, useGetAllPartnersQuery } from '@/features/partners/partnersApi';
 import { useDeleteProductMutation, useGetAllProductsQuery } from '@/features/product/productsApi';
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 import { useLocation } from 'react-router';
 
 type Props = {}
@@ -14,7 +11,7 @@ function AllProducts({ }: Props) {
 
 
   const [page, setPage] = useState(1);
-  const [products, setProducts] = useState([]); // State to hold all partners
+  const [products, setProducts] = useState<any>([]); // State to hold all partners
   const [loading, setLoading] = useState(true); // Track loading state
   const [hasMore, setHasMore] = useState(true); // Track if there are more partners items to load
   const { state } = useLocation();
@@ -32,7 +29,7 @@ function AllProducts({ }: Props) {
       if (data.data.length === 0) {
         setHasMore(false);
       } else {
-        setProducts((prev) => [...prev, ...data.data]); // Append new partners items
+        setProducts((prev:any) => [...prev, ...data.data]); // Append new partners items
       }
       setLoading(false); // Stop loading when data is received
     }
@@ -75,8 +72,8 @@ function AllProducts({ }: Props) {
       successToast("Products deleted successfully!");
 
       // Remove the deleted news from the state
-      setProducts((prev) => prev.filter((item) => item._id !== id));
-    } catch (err) {
+      setProducts((prev: any[]) => prev.filter((item: { _id: string; }) => item._id !== id));
+    } catch (err:any) {
       if (err?.data?.message) {
         errorToast(err?.data?.message);
       } else if (Array.isArray(err?.data?.errors)) {
@@ -104,7 +101,7 @@ function AllProducts({ }: Props) {
       <div className="grid grid-cols-3 gap-8 h-screen ">
         {Array.from({ length: 12 })
           .fill(null)
-          .map((item, index) => (
+          .map((_item, index) => (
             <div key={index} className="bg-slate-50 rounded-xl h-[300px] w-full"></div>
           ))}
       </div>
@@ -120,7 +117,7 @@ function AllProducts({ }: Props) {
   return (
     <div>
       <div className="grid grid-cols-3 gap-8">
-        {products.map((item) => (
+        {products.map((item: Products) => (
           <ProductsCard
             handleDelete={() => handleDelete(item._id)}
             key={item._id}

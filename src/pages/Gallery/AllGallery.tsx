@@ -2,19 +2,19 @@ import { useState, useEffect } from "react";
 import { errorToast, successToast } from "@/components/Toast";
 import { useLocation } from "react-router";
 import { useDeleteGalleryMutation, useGetAllGalleryQuery } from "@/features/gallery/galleryApi";
-import GalleryCard from "@/components/Gallery/GalleryCard";
+import GalleryCard, { Gallery } from "@/components/Gallery/GalleryCard";
 
 type Props = {};
 
 function AllGallery({ }: Props) {
  
   const [page, setPage] = useState(1);
-  const [gallery, setGallery] = useState([]); // State to hold all gallery
+  const [gallery, setGallery] = useState<any>([]); // State to hold all gallery
   const [loading, setLoading] = useState(true); // Track loading state
   const [hasMore, setHasMore] = useState(true); // Track if there are more gallery to load
   const { state } = useLocation();
   const { data, isLoading, refetch } = useGetAllGalleryQuery({ page, limit: 10 });
-  const [deleteGallery, { isLoading: isDeleteLoading, isError: isDeleteError, error: deleteError }] = useDeleteGalleryMutation();
+  const [deleteGallery, {  }] = useDeleteGalleryMutation();
 
   // Effect to fetch data when `data` is available or refetch is triggered
   useEffect(() => {   
@@ -22,7 +22,7 @@ function AllGallery({ }: Props) {
       if (data.data.length === 0) {
         setHasMore(false);
       } else {
-        setGallery((prevGallery) => [...prevGallery, ...data.data]); // Append new gallery
+        setGallery((prevGallery: any) => [...prevGallery, ...data.data]); // Append new gallery
       }
       setLoading(false); // Stop loading when data is received
     }
@@ -75,8 +75,8 @@ function AllGallery({ }: Props) {
       successToast("Gallery deleted successfully!");
 
       // Remove the deleted gallery from the state
-      setGallery((prevGallery) => prevGallery.filter((gallery) => gallery._id !== id));
-    } catch (err) {
+      setGallery((prevGallery: any[]) => prevGallery.filter((gallery) => gallery._id !== id));
+    } catch (err:any) {
       if (err?.data?.message) {
         errorToast(err?.data?.message);
       } else if (Array.isArray(err?.data?.errors)) {
@@ -92,7 +92,7 @@ function AllGallery({ }: Props) {
       <div className="grid grid-cols-3 gap-8 h-screen ">
         {Array.from({ length: 12 })
           .fill(null)
-          .map((item, index) => (
+          .map((_item, index) => (
             <div key={index} className="bg-slate-50 rounded-xl h-[300px] w-full"></div>
           ))}
       </div>
@@ -108,7 +108,7 @@ function AllGallery({ }: Props) {
   return (
     <div>
       <div className="grid grid-cols-3 gap-8">
-        {gallery.map((item) => (
+        {gallery.map((item: Gallery) => (
           <GalleryCard
             handleDelete={() => handleDelete(item._id)}
             key={item._id} // Ensure `id` exists in your item type

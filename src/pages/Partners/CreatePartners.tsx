@@ -3,7 +3,6 @@ import Image from '@/components/Image/Image';
 import Loader from '@/components/Loader/Loader';
 import { errorToast, successToast } from '@/components/Toast';
 import DragDrop from '@/components/Uploader/DragDrop';
-import { useAddGalleryMutation } from '@/features/gallery/galleryApi';
 import { useAddPartnersMutation } from '@/features/partners/partnersApi';
 import axios from 'axios';
 import { Button, Label, TextInput } from 'flowbite-react';
@@ -13,9 +12,17 @@ import * as Yup from "yup";
 
 type Props = {}
 
+export type ImageLink = {
+    public_id: string;
+    secure_url: string;
+    url: string;
+    bytes: number;
+    width: number;
+    height: number;
+};
 interface GalleryValues {
     name: string;
-    imageLink: string;
+    imageLink?: ImageLink;
 }
 
 
@@ -30,9 +37,9 @@ const validationSchema = Yup.object({
 });
 
 function CreatePartners({ }: Props) {
-    const [addPartners, { isLoading }] = useAddPartnersMutation();
-    const [preview, setPreview] = useState();
-    const [imageFile, setImageFile] = useState();
+    const [addPartners, {  }] = useAddPartnersMutation();
+    const [preview, setPreview] = useState<any>();
+    const [imageFile, setImageFile] = useState<any>();
     const [loading,setLoading] = useState(false);
 
 
@@ -85,7 +92,7 @@ function CreatePartners({ }: Props) {
                 resetForm(); // Clear the form after submission
                 setPreview('');
                 setImageFile('');
-            } catch (err) {
+            } catch (err:any) {
                 if (err?.message || err?.data?.message) {
                     errorToast(err?.data?.message || err.message);
                 } else if (Array.isArray(err?.data?.errors)) {

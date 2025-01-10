@@ -3,7 +3,7 @@ import Image from "@/components/Image/Image";
 import Loader from "@/components/Loader/Loader";
 import { errorToast, successToast } from "@/components/Toast";
 import DragDrop from "@/components/Uploader/DragDrop";
-import { useGetAllGalleryQuery, useGetGalleryQuery, useUpdateGalleryMutation } from "@/features/gallery/galleryApi";
+import {  useGetGalleryQuery } from "@/features/gallery/galleryApi";
 import { useGetAllPartnersQuery, useUpdatePartnersMutation } from "@/features/partners/partnersApi";
 import axios from "axios";
 import { Button, Label, TextInput } from "flowbite-react";
@@ -11,12 +11,13 @@ import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
 import * as Yup from "yup";
+import { ImageLink } from "./CreatePartners";
 
 type Props = {}
 
 interface GalleryValues {
     name: string;
-    imageLink: string;
+    imageLink?: ImageLink;
 }
 
 
@@ -32,13 +33,13 @@ function EditPartnersBySlug({}: Props) {
 
 
     const [shouldRefetch] = useState(false); // Control when to refetch
-    const [loading,setLoading] = useState(false); // Control when to refetch
+    const [loading] = useState(false); // Control when to refetch
 
     const { state } = useLocation();
     const { slug } = useParams();
     const navigate = useNavigate();
     const [preview, setPreview] = useState(state?.imageLink?.secure_url);
-      const [imageFile, setImageFile] = useState(null);
+      const [imageFile, setImageFile] = useState<any>(null);
       const { data: partnersData } = useGetAllPartnersQuery(slug, {
           skip: !!state, // Skip query if state exists
       });
@@ -95,6 +96,10 @@ function EditPartnersBySlug({}: Props) {
                     };
                     data.imageLink = responseImageFile;
                 }
+                if (!slug) {
+                    throw new Error("Product ID is missing");
+                  }
+  
 
                  await updateGallery({ id:slug,data:data}).unwrap();
 
@@ -102,7 +107,7 @@ function EditPartnersBySlug({}: Props) {
 
                  successToast('Updated');
 
-            } catch (err) {
+            } catch (err:any) {
                 if (err?.message || err?.data?.message) {
                     errorToast(err?.data?.message || err.message);
                 } else if (Array.isArray(err?.data?.errors)) {

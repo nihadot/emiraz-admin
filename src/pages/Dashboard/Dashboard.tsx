@@ -13,25 +13,21 @@ function Dashboard({ }: Props) {
 
             <Cards
                 count={data?.pagination?.totalCount?.countOfBlogs}
-                label={''}
                 title={'Blogs'}
             />
 
             <Cards
                 count={data?.pagination?.totalCount?.countOfGallery}
-                label={''}
                 title={'Gallery'}
             />
 
             <Cards
                 count={data?.pagination?.totalCount?.countOfNews}
-                label={''}
                 title={'News'}
             />
 
             <Cards
                 count={data?.pagination?.totalCount?.countOfPartners}
-                label={''}
                 title={'Partners'}
             />
 
@@ -46,7 +42,10 @@ export default Dashboard
 
 
 
-function Cards({ title, count, label }) {
+function Cards({ title, count }: {
+    title: any;
+    count: any;
+}) {
     return (
         <div className='w-full bg-slate-100 flex justify-between items-center rounded-lg p-4'>
 

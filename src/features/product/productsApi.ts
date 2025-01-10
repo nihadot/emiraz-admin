@@ -24,9 +24,9 @@ export const productsApi = createApi({
     }),
     getProduct: builder.query({
       query: (id) => `/${id}`,
-      providesTags: (result, error, id) => [{ type: 'Products', id }],
+      providesTags: (id) => [{ type: 'Products', id }],
     }),    
-    updateProduct: builder.mutation<void, { id: string; data }>({
+    updateProduct: builder.mutation<any, { id: string; data: any }>({
       query: ({ id, data }) => ({
         url: `/${id}`,
         method: 'PUT',
@@ -36,9 +36,9 @@ export const productsApi = createApi({
           'Content-Type': 'application/json',
         },
       }),
-      invalidatesTags: (result, error, { id }) => [{ type: 'Products', id }],
+      invalidatesTags: ( { id }) => [{ type: 'Products', id }],
     }),
-    deleteProduct: builder.mutation<void, string>({
+    deleteProduct: builder.mutation<any, string>({
       query: (id) => ({
         url: `/${id}`,
         method: 'DELETE',
@@ -47,7 +47,7 @@ export const productsApi = createApi({
           'Content-Type': 'application/json',
         },
       }),
-      invalidatesTags: (result, error, id) => [{ type: 'Products', id }],
+      invalidatesTags: (_result, _error, id) => [{ type: 'Products', id }],
     }),
   }),
 });

@@ -14,16 +14,6 @@ interface LoginFormValues {
   password: string;
 }
 
-// Define types for login response
-interface AuthResponse {
-  token: string;
-  user: {
-    id: string;
-    email: string;
-    name: string;
-  };
-}
-
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -67,13 +57,13 @@ export default function LoginForm() {
   ): Promise<void> => {
 
 
-    const data: LoginFormValues = {
+    const data: any = {
       username: values.username,
       password: values.password,
     };
 
     try {
-      const response: AuthResponse = await login(data).unwrap();
+      const response: any = await login(data).unwrap();
 
       // Store the token or perform actions after successful login
       localStorage.setItem('token', response.token);
@@ -82,7 +72,7 @@ export default function LoginForm() {
       dispatch(loginAuthAction(response.token)); // Dispatch login action
 
 
-    } catch (err) {
+    } catch (err:any) {
       if (err?.data?.message) {
         errorToast(err?.data?.message)
       } else if (Array.isArray(err?.data?.errors)) {

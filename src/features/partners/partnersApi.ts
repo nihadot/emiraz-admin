@@ -24,9 +24,9 @@ export const partnersApi = createApi({
     }),
     getPartners: builder.query({
       query: (id) => `/${id}`,
-      providesTags: (result, error, id) => [{ type: 'Partners', id }],
+      providesTags: (id) => [{ type: 'Partners', id }],
     }),    
-    updatePartners: builder.mutation<void, { id: string; data }>({
+    updatePartners: builder.mutation<any, { id: string; data: any }>({
       query: ({ id, data }) => ({
         url: `/${id}`,
         method: 'PUT',
@@ -36,9 +36,9 @@ export const partnersApi = createApi({
           'Content-Type': 'application/json',
         },
       }),
-      invalidatesTags: (result, error, { id }) => [{ type: 'Partners', id }],
+      invalidatesTags: ({ id }) => [{ type: 'Partners', id }],
     }),
-    deletePartners: builder.mutation<void, string>({
+    deletePartners: builder.mutation<any, string>({
       query: (id) => ({
         url: `/${id}`,
         method: 'DELETE',
@@ -47,7 +47,7 @@ export const partnersApi = createApi({
           'Content-Type': 'application/json',
         },
       }),
-      invalidatesTags: (result, error, id) => [{ type: 'Partners', id }],
+      invalidatesTags: (id) => [{ type: 'Partners', id }],
     }),
   }),
 });

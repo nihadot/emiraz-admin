@@ -3,18 +3,18 @@ import { useGetContactsQuery } from "@/features/contact/contact";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 
-function Contacts({}: Props) {
+function Contacts() {
 
 
     const [page, setPage] = useState(1);
-    const [contacts, setContacts] = useState([]); // State to hold all partners
+    const [contacts, setContacts] = useState<any>([]); // State to hold all partners
     const [loading, setLoading] = useState(true); // Track loading state
     const [hasMore, setHasMore] = useState(true); // Track if there are more partners items to load
     const { state } = useLocation();
   
 
 
-      const { data, isLoading, refetch } = useGetContactsQuery({ page, limit: 10 });
+      const { data, isLoading, refetch } = useGetContactsQuery<any>({ page, limit: 10 });
   
     
     
@@ -23,7 +23,7 @@ function Contacts({}: Props) {
           if (data.data.length === 0) {
             setHasMore(false);
           } else {
-            setContacts((prev) => [...prev, ...data.data]); // Append new partners items
+            setContacts((prev: any) => [...prev, ...data.data]); // Append new partners items
           }
           setLoading(false); // Stop loading when data is received
         }
@@ -70,7 +70,7 @@ function Contacts({}: Props) {
           <div className="grid grid-cols-3 gap-8 h-screen ">
             {Array.from({ length: 12 })
               .fill(null)
-              .map((item, index) => (
+              .map((_item, index) => (
                 <div key={index} className="bg-slate-50 rounded-xl h-[300px] w-full"></div>
               ))}
           </div>
@@ -86,7 +86,7 @@ function Contacts({}: Props) {
   return (
     <div>
     <div className="grid grid-cols-3 gap-8">
-      {contacts.map((item) => (
+      {contacts.map((item: IContacts) => (
         <ContactsCard
           key={item._id}
           item={item}

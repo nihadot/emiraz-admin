@@ -9,13 +9,13 @@ type Props = {};
 function AllNews({ }: Props) {
 
   const [page, setPage] = useState(1);
-  const [news, setNews] = useState([]); // State to hold all news
+  const [news, setNews] = useState<any[]>([]); // State to hold all news
   const [loading, setLoading] = useState(true); // Track loading state
   const [hasMore, setHasMore] = useState(true); // Track if there are more news items to load
   const { state } = useLocation();
 
-  const { data, isError, error, isLoading, refetch } = useGetAllNewsQuery({ page, limit: 10 });
-  const [deleteNews, { isLoading: isDeleteLoading, isError: isDeleteError, error: deleteError }] =
+  const { data, isLoading, refetch } = useGetAllNewsQuery({ page, limit: 10 });
+  const [deleteNews] =
     useDeleteNewsMutation();
 
   // Effect to fetch data when `data` is available or refetch is triggered
@@ -72,7 +72,7 @@ function AllNews({ }: Props) {
       <div className="grid grid-cols-3 gap-8 h-screen ">
         {Array.from({ length: 12 })
           .fill(null)
-          .map((item, index) => (
+          .map((_item, index) => (
             <div key={index} className="bg-slate-50 rounded-xl h-[468px] w-full"></div>
           ))}
       </div>
@@ -93,8 +93,8 @@ function AllNews({ }: Props) {
       successToast("News deleted successfully!");
 
       // Remove the deleted news from the state
-      setNews((prevNews) => prevNews.filter((item) => item._id !== id));
-    } catch (err) {
+      setNews((prevNews) => prevNews.filter((item:any) => item._id !== id));
+    } catch (err:any) {
       if (err?.data?.message) {
         errorToast(err?.data?.message);
       } else if (Array.isArray(err?.data?.errors)) {
@@ -108,7 +108,7 @@ function AllNews({ }: Props) {
   return (
     <div>
       <div className="grid grid-cols-3 gap-8">
-        {news.map((item) => (
+        {news.map((item:any) => (
           <NewsCard
             handleDelete={() => handleDelete(item._id)}
             key={item._id}

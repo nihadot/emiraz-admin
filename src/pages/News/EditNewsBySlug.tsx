@@ -10,6 +10,7 @@ import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
 import * as Yup from "yup";
+import { ImageLink } from "../Partners/CreatePartners";
 
 type Props = {}
 
@@ -26,7 +27,7 @@ interface NewsFormValues {
     seoDescriptionAr: string;
     seoKeywords: string;
     seoKeywordsAr: string;
-    imageLink: string;
+    imageLink?: ImageLink;
 }
 
 const validationSchema = Yup.object({
@@ -62,8 +63,8 @@ function EditNewsBySlug({}: Props) {
     const { slug } = useParams();
     const navigate = useNavigate();
     const [preview, setPreview] = useState(state?.imageLink?.secure_url);
-    const [imageFile, setImageFile] = useState(null);
-    const [loading,setLoading] = useState(false);
+    const [imageFile, setImageFile] = useState<any>(null);
+    const [loading] = useState(false);
   
 
         const { data: newsData } = useGetNewsQuery(slug, {
@@ -106,7 +107,7 @@ function EditNewsBySlug({}: Props) {
               // Uncomment for testing with default values
             
               validationSchema,
-              onSubmit: async (values, { resetForm }) => {
+              onSubmit: async (values, {  }) => {
                   try {
                  
                       const formdata: NewsFormValues = {
@@ -142,6 +143,11 @@ function EditNewsBySlug({}: Props) {
                     }
     
       
+                    if (!slug) {
+                        throw new Error("Product ID is missing");
+                      }
+
+                      
                       await updateNew({id:slug,data:formdata}).unwrap();
       
                      
@@ -150,7 +156,7 @@ function EditNewsBySlug({}: Props) {
 
                       successToast('Updated');
       
-                  } catch (err) {
+                  } catch (err:any) {
                     
                       if (err?.message ||err?.data?.message) {
                           errorToast(err?.message || err?.data?.message);
